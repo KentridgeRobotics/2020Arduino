@@ -1,6 +1,6 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_16X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_16X); //Can be increased to 50 MS for greater accuracy if needed
 
 double newDistance = 0;
 
@@ -58,13 +58,14 @@ void loop() {
 
   }
 
-  if (newDistance > 100) {
+  if (newDistance > 50) {
       color = -1;
   }
-  Serial.print("COLOR ");
   if (color == 0) Serial.print("R ");
   else if (color == 1) Serial.print("G ");
   else if (color == 2) Serial.print("B ");
   else if (color == 3) Serial.print("Y ");
   else Serial.print("N ");
+  Serial.print(" Distance:");
+  Serial.println(newDistance);
 }
