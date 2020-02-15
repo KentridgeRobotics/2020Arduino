@@ -1,0 +1,6 @@
+{
+    "port": "COM7",
+    "board": "arduino:avr:nano",
+    "configuration": "cpu=atmega328old",
+    "sketch": "color_sensor_i2c.ino"
+}
