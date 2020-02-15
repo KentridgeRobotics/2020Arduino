@@ -1,6 +1,6 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_16X);
 
 double newDistance = 0;
 
