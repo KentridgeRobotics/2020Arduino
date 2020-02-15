@@ -61,11 +61,10 @@ void loop() {
   if (newDistance > 100) {
       color = -1;
   }
+  Serial.print("COLOR ");
   if (color == 0) Serial.print("R ");
   else if (color == 1) Serial.print("G ");
   else if (color == 2) Serial.print("B ");
   else if (color == 3) Serial.print("Y ");
   else Serial.print("N ");
-  Serial.print(" Distance:");
-  Serial.println(newDistance);
 }
