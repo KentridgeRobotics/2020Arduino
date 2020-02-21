@@ -21,9 +21,9 @@ byte poll[2] = {0x81, 0x42};
 byte response[2];
 byte dataBuffer[256];
 
-void initSerial(byte header1, byte header2, long baudRate = 115200) {
-	response[0] = header1;
-	response[1] = header2;
+void initSerial(short header, long baudRate = 115200) {
+	response[0] = (byte)header;
+	response[1] = (byte)(header >> 8);
 	Serial.begin(baudRate);
 }
 

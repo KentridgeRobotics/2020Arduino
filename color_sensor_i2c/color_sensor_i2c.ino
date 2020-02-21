@@ -20,7 +20,7 @@ float colorDistance(float red1, float green1, float blue1, float red2, float gre
 };
 
 void setup() {
-  initSerial(0x2D, 0x86);
+  initSerial(0x802D);
   if(!tcs.begin()){
     asm volatile ("  jmp 0"); 
   }
