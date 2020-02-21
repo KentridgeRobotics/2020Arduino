@@ -1,4 +1,4 @@
-#include "CSSerialProtocol.h"
+#include "CSSerial.h"
 #include <Arduino.h>
 
 #define SERIAL_TIMEOUT 5
