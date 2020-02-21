@@ -21,7 +21,7 @@ byte poll[2] = {0x81, 0x42};
 byte response[2];
 byte dataBuffer[256];
 
-void initSerial(short header, long baudRate = 115200) {
+void serialBegin(short header, long baudRate = 115200) {
 	response[0] = (byte)header;
 	response[1] = (byte)(header >> 8);
 	Serial.begin(baudRate);
@@ -43,6 +43,7 @@ void sendData() {
 	Serial.write(csSerialProtocol.checksum.array, 2);
 	Serial.write(csSerialProtocol.msgLength.array, 2);
 	Serial.write(dataBuffer, csSerialProtocol.msgLength.num);
+	reset();
 }
 
 byte* getDataBuffer() {
@@ -67,7 +68,7 @@ uint16_t* getMsgLength() {
 
 unsigned long lastRec, startRec;
 
-int32_t runSerial() {
+int32_t serialAvailable() {
 	if (Serial.available() > 0) {
 		byte in = Serial.read();
 		if (!foundSync) {

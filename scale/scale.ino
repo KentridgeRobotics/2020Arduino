@@ -22,7 +22,7 @@ This example code uses bogde's excellent library:"https://github.com/bogde/HX711
 */
 
 #include "HX711.h"
-#include <CSSerialProtocol.h>
+#include <CSSerial.h>
 
 #define calibration_factor -7050.0 //This value is obtained using the SparkFun_HX711_Calibration sketch
 
@@ -32,7 +32,7 @@ This example code uses bogde's excellent library:"https://github.com/bogde/HX711
 HX711 scale;
 
 void setup() {
-  initSerial(0x902D);
+  serialBegin(0x902D);
 
   scale.begin(DOUT, CLK);
   scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
@@ -40,7 +40,7 @@ void setup() {
 }
 
 void loop() {
-  if (runSerial() >= 0) {
+  if (serialAvailable() >= 0) {
     addData(scale.get_units());
     sendData();
   }
