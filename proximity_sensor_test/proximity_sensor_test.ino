@@ -1,31 +1,24 @@
-#include <SoftwareWire.h>
-#include "VCNL4010Software.h"
+#include "Adafruit_VCNL4010Software.h"
 
-VCNL4010Software outSensor;
+Adafruit_VCNL4010Software outSensor;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(7, INPUT_PULLUP);
-  while(!outSensor.begin()) {
+  while(!outSensor.begin(6, 7)) {
     Serial.println("no sensor");
     asm volatile ("  jmp 0");
   }
-  outSensor.setProximityContinuous(true);
-  outSensor.setProximityHz(251);
-  outSensor.setLEDmA(200);
-  outSensor.setInterrupt(1,false,false,true,false,0,5000);
+  outSensor.setLEDcurrent(20);
+  outSensor.setFrequency(VCNL4010_250);
   Serial.println("sensor began");
 }
 
-bool interrupt = false;
-bool lastInt = false;
+bool outStatus, outLast;
 
 void loop() {
-  interrupt = digitalRead(7) == LOW;
-  if (interrupt)
-    outSensor.clearInterrupt();
-  if (!interrupt && lastInt) {
-    Serial.println("a");
+  outStatus = outSensor.readProximity() >= 5000;
+  if (!outStatus && outLast) {
+    Serial.println("dec");
   }
-  lastInt = interrupt;
+  outLast = outStatus;
 }

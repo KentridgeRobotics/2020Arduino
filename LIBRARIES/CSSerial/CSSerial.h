@@ -7,7 +7,7 @@
   Arduino to differentiate it from others. An optional baud rate can be
   supplied.
 */
-void serialBegin(short header, long baudRate = 115200);
+void serialBegin(uint16_t header, long baudRate = 115200);
 
 /*
   Run during Arduino loop to check for available checksumed serial messages.
@@ -15,6 +15,18 @@ void serialBegin(short header, long baudRate = 115200);
   -1 if no message was available.
 */
 int32_t serialAvailable();
+
+/*
+  Run during Arduino setup to add valid headers that the Arduino will respond
+  to if received.
+*/
+void registerHeader(uint16_t header);
+
+/*
+  Run after a message has been received to get the received header. Useful for
+  determining the type of message received.
+*/
+uint16_t getHeader();
 
 /*
   Run after all data has been added to the buffer and is ready to be sent to the

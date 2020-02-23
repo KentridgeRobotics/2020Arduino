@@ -1,57 +1,52 @@
-#include <Wire.h>
-#include <SoftwareWire.h>
-#include "VCNL4010.h"
-#include "VCNL4010Software.h"
+#include "Adafruit_VCNL4010.h"
+#include "Adafruit_VCNL4010Software.h"
 #include <CSSerial.h>
 
-#define PROXIMITY_THRESHOLD 15000
+#define PROXIMITY_THRESHOLD 5000
 
-VCNL4010 inSensor;
-VCNL4010Software outSensor;
+Adafruit_VCNL4010 inSensor;
+Adafruit_VCNL4010Software outSensor;
 
 void setup() {
-  //serialBegin(0xB02D);
-  Serial.begin(115200);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(7, INPUT_PULLUP);
+  serialBegin(0xB02D);
+  registerHeader(0xB0FF);
+  pinMode(LED_BUILTIN, OUTPUT);
   while(!inSensor.begin()) {
     asm volatile ("  jmp 0");
   }
-  inSensor.setProximityContinuous(true);
-  inSensor.setProximityHz(251);
-  inSensor.setLEDmA(200);
-  inSensor.setInterrupt(1,false,false,true,false,0,5000);
-  while(!outSensor.begin()) {
+  inSensor.setLEDcurrent(20);
+  inSensor.setFrequency(VCNL4010_250);
+  while(!outSensor.begin(6, 7)) {
     asm volatile ("  jmp 0");
   }
-  outSensor.setProximityContinuous(true);
-  outSensor.setProximityHz(251);
-  outSensor.setLEDmA(200);
-  outSensor.setInterrupt(1,false,false,true,false,0,5000);
+  outSensor.setLEDcurrent(20);
+  outSensor.setFrequency(VCNL4010SOFTWARE_250);
 }
 
-bool lastIn, lastOut, currentIn, currentOut;
-uint8_t ballCount = 5;
+bool inCurrent, outCurrent, inLast, outLast;
+uint8_t ballCount = 3;
+
+long lastTime = 0;
 
 void loop() {
-  currentIn = digitalRead(6) == LOW;
-  currentOut = digitalRead(7) == LOW;
-  if (currentIn)
-    inSensor.clearInterrupt();
-  if (currentOut)
-    outSensor.clearInterrupt();
-  if (lastIn && !currentIn) {
+  inCurrent = inSensor.readProximity() >= PROXIMITY_THRESHOLD;
+  outCurrent = outSensor.readProximity() >= PROXIMITY_THRESHOLD;
+  if (inLast && !inCurrent && ballCount < 127) {
     ballCount++;
-    Serial.println("inc");
+    digitalWrite(LED_BUILTIN, HIGH);
   }
-  if (lastOut && !currentOut) {
+  if (outLast && !outCurrent && ballCount > 0) {
     ballCount--;
-    Serial.println("dec");
+    digitalWrite(LED_BUILTIN, LOW);
   }
-  lastIn = currentIn;
-  lastOut = currentOut;
-  //if (serialAvailable() >= 0) {
-    //addData(ballCount);
-    //sendData();
-  //}
+  inLast = inCurrent;
+  outLast = outCurrent;
+  if (serialAvailable() >= 0) {
+    if (getHeader() == 0xB0FF) {
+      ballCount = 3;
+    } else {
+      addData(ballCount);
+      sendData();
+    }
+  }
 }
