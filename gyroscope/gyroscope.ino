@@ -2,13 +2,13 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <CSSerialProtocol.h>
+#include <CSSerial.h>
   
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
  
 void setup(void) 
 {
-  initSerial(0xA02D);
+  serialBegin(0xA02D);
   /* Initialise the sensor */
   if(!bno.begin()){
     asm volatile ("  jmp 0"); 
@@ -30,7 +30,7 @@ void loop(void)
     z = event.orientation.z;
     startTime = millis();
   }
-  if (runSerial() >= 0) {
+  if (serialAvailable() >= 0) {
     addData(x);
     addData(y);
     addData(z);

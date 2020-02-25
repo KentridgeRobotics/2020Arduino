@@ -1,4 +1,4 @@
-#include <CSSerialProtocol.h>
+#include <CSSerial.h>
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_16X); //Can be increased to 50 MS for greater accuracy if needed
@@ -20,7 +20,7 @@ float colorDistance(float red1, float green1, float blue1, float red2, float gre
 };
 
 void setup() {
-  initSerial(0x802D);
+  serialBegin(0x802D);
   if(!tcs.begin()){
     asm volatile ("  jmp 0"); 
   }
@@ -61,7 +61,7 @@ void loop() {
       color = -1;
     }
   }
-  if (runSerial() >= 0) {
+  if (serialAvailable() >= 0) {
     if (color == 0)
       addData('R');
     else if (color == 1)
